@@ -1,0 +1,135 @@
+.App, body {
+  height: 1000px;
+  color: #ffffff;
+  background-color: #393957; 
+}
+
+.session-name {
+  margin-bottom: 0px;
+}
+
+.session-id {
+  margin-top: 6px;
+}
+
+.the-timestamp {
+  float: right;
+  margin-top: 0px;
+}
+
+.the-nickname, .the-content {
+  margin-top: 3px;
+  margin-bottom: 10px;
+}
+
+.the-nickname {
+  font-weight: bold;
+}
+
+.msg-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1000px;
+  transform: translate(-50%, -50%);
+
+}
+
+#msg-textarea {
+  width: 1000px;
+  height: 60px;
+  border-radius: 8px;
+  display: block;
+}
+
+.series-of-messages {
+  padding: 0px 0px 0px 0px;
+}
+
+.series-of-messages li {
+  list-style-type: none;
+}
+
+.series-of-messages li:nth-child(odd) {
+  background-color: #393957;
+}
+
+.series-of-messages li:nth-child(even) {
+  background-color: #5F5F78;
+}
+
+.individual-msg {
+  padding: 1px 0px 1px 0px;
+}
+
+.button-spacer {
+  height: 5px;
+}
+
+#main-logo {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 35%;
+  height: 300px;
+  width: auto;
+}
+
+#home-page-buttons {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 75%;
+}
+
+#create-session-button {
+  width: 200px;
+  height: 75px;
+  display: block;
+}
+
+#join-session-button {
+  width: 200px;
+  height: 75px;
+  display: block;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+#the-button {
+  width: 1005px;
+  color: #000000;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
