@@ -29,10 +29,9 @@
 .msg-panel {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 30%;
   width: 1000px;
   transform: translate(-50%, -50%);
-
 }
 
 #msg-textarea {
@@ -59,11 +58,15 @@
 }
 
 .individual-msg {
-  padding: 1px 0px 1px 0px;
+  padding: 1px 3px 1px 3px;
 }
 
 .button-spacer {
   height: 5px;
+}
+
+.big-button-spacer {
+  height: 10px;
 }
 
 #main-logo {
@@ -75,23 +78,189 @@
   width: auto;
 }
 
-#home-page-buttons {
+#home-page-buttons, 
+#create-session-enter,
+#join-session-enter {
   position: absolute;
   transform: translate(-50%, -50%);
   left: 50%;
   top: 75%;
 }
 
+#create-session-input,
+#join-session-input {
+  display: block;
+  width: 195px;
+  border-radius: 6px;
+}
+
 #create-session-button {
+  color: #ffffff;
+  background-color: #ff0000;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
   width: 200px;
   height: 75px;
   display: block;
 }
 
-#join-session-button {
+#create-session-button:hover {
+  color: #ffffff;
+  background-color: #fc7a7a;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
   width: 200px;
   height: 75px;
   display: block;
+}
+
+#confirm-create {
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #ff0000;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 35px;
+  display: block;
+}
+
+#confirm-create:hover {
+  color: #ffffff;
+  background-color: #fc7a7a;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 35px;
+  display: block;
+}
+
+#join-session-button {
+  color: #ffffff;
+  background-color: #0000ff;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 75px;
+  display: block;
+}
+
+#join-session-button:hover {
+  color: #ffffff;
+  background-color: #7c7cf9;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 75px;
+  display: block;
+}
+
+#confirm-join {
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #0000ff;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 35px;
+  display: block;
+}
+
+#confirm-join:hover {
+  color: #ffffff;
+  background-color: #7c7cf9;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 35px;
+  display: block;
+}
+
+.back-button {
+  color: #ffffff;
+  background-color: #5f5f78;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 35px;
+  display: block;
+}
+
+.back-button:hover {
+  color: #ffffff;
+  background-color: #6a6a76;
+  font-size: medium;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  height: 35px;
+  display: block;
+}
+
+.nuntius-emblem {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  height: 60px;
+  width: auto;
+}
+
+.leave-session {
+  color: #ffffff;
+  background-color: #5f5f78;
+  font-size: medium;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+  height: 50px;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+}
+
+.leave-session:hover {
+  color: #ffffff;
+  background-color: #6a6a76;
+  font-size: medium;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+  height: 50px;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+}
+
+#the-send-msg-button {
+  color: #ffffff;
+  background-color: #5f5f78;
+  font-size: medium;
+  width: 1005px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+}
+
+#the-send-msg-button:hover {
+  color: #ffffff;
+  background-color: #6a6a76;
+  border: none;
+  border-radius: 10px;
+}
+
+.the-button-link {
+  text-decoration: none;
 }
 
 .App-logo {

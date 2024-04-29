@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from "react";
+import Navbar from "../components/Navbar.jsx";
 
 export default function Chatroom({messages, userInfo, session, sessionName}) {
 
@@ -11,56 +12,12 @@ export default function Chatroom({messages, userInfo, session, sessionName}) {
         show_the_messages();
     }, []);
     
-    /*
-    useEffect(() => {
-        console.log(messageUnit);
-        send_message();
-    }, [messageUnit]);
-    */
-    
     async function show_the_messages() {
-        /*
-        try {
-            const response = await axios.post("http://localhost:4000/api/fetch-posts", {
-                sessionID: session
-            });
-    
-            if (response) {
-                const messageData = response.data.messageData.map((item) => ({
-                    userID: item.userID,
-                    nickname: item.nickname,
-                    avatar: item.avatar,
-                    content: item.content,
-                    type: 'text',
-                    timestamp: item.timestamp
-                }))
-                //setMessages(messageData);
-                console.log("Messages have been successfully retrieved");
-            } else console.log("Messages have not been retrieved");
-    
-        } catch (error) {
-            console.error("Error retrieving messages: " + error);
-        } 
-        */
+        // call backend API here...
     }
     
     async function send_message(msg) {
-        /*
-        try {
-            const response = await axios.post("http://localhost:4000/api/create-new-post", {
-                sessionID: session,
-                userID: userInfo.userID,
-                avatar: userInfo.avatar,
-                content: msg,
-                type: "text"
-            })
-            if (response) console.log("The message has been successfully created.");
-            else console.log("The message was not created.");
-    
-        } catch (error) {
-            console.error("Error creating message: " + error);
-        }
-        */
+        // call backend API here...
     }
     
     function display_messages() {
@@ -79,11 +36,11 @@ export default function Chatroom({messages, userInfo, session, sessionName}) {
                 </ul>
             </div>
         )
-    
     }
 
     return (
         <> 
+            <Navbar/>
             <div className="msg-panel">
                 <h2 className="session-name">{sessionName}</h2>
                 <p className="session-id">Session ID: {session}</p>
@@ -97,7 +54,8 @@ export default function Chatroom({messages, userInfo, session, sessionName}) {
                                 setMessageUnit(event.target.value)
                             }}
                     />
-                    <button id="the-button" onClick={send_message("foo")}>Send</button>
+                    <div className="button-spacer"/>
+                    <button id="the-send-msg-button" onClick={send_message()}>Send</button>
                 </form>
             </div>        
         </>
