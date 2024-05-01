@@ -54,7 +54,8 @@ export default function App() {
             <div className="App">          
                 <Routes>
                     <Route index element={<Home/>}/>
-                    <Route path="chatroom" element={<Chatroom messages={messages} 
+                    <Route path="chatroom" element={<Chatroom messages={messages}
+                                                              setMessages={setMessages} 
                                                               userInfo={userInfo} 
                                                               session={session} 
                                                               sessionName={sessionName}/>}/>

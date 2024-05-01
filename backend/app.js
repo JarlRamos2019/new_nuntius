@@ -29,10 +29,11 @@ async function connect() {
 }
 
 // Create session route
-router.post("/create-session", async (req, res) => {
+app.post("api/create-session", async (req, res) => {
   try {
       const sessID = Math.random * 10000000;
       const { nickname } = req.body;
+      const avatar = 5;
 
       const newSession = {
           sessionID: sessID,
@@ -47,7 +48,8 @@ router.post("/create-session", async (req, res) => {
         console.log("Session ID: " + sessID);
         res.json({
             sessionID: sessID,
-            nickname: nickname
+            nickname: nickname,
+            avatar: avatar
         })
       } else {
         console.error("Failed to create new session");
@@ -60,21 +62,25 @@ router.post("/create-session", async (req, res) => {
 });
 
 // Join session route
-router.post("/join-session", async (req, res) => {
+app.post("api/join-session", async (req, res) => {
   try {
-      const { sessionID, userID, nickname } = req.body;
-      const session = await Sess.findById(sessionID);
-      if (!session) {
+      const { sessionID, nickname } = req.body;
+      const avatar = 5;
+
+      const response = await Sess.find({sessionID: sessionID});
+      if (!response) {
           return res.status(404).json({ message: "Session not found" });
+      } else {
+        res.json({
+          nickname: nickname,
+          avatar: avatar,
+          sessionID: sessionID
+        });
       }
-      session.userID = userID;
-      session.nickname = nickname;
-      await session.save();
-      res.status(200).json(session);
-  } catch (error) {
+   } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
-  }
+   }
 });
 
 app.post('/api/create-new-post', async (req, res) => {
@@ -89,7 +95,7 @@ app.post('/api/create-new-post', async (req, res) => {
       timestamp: Date.now()
     }
   
-    const theSessionRoom = await Sess.findById(sessionID);
+    const theSessionRoom = await Sess.find({sessionID: sessionID});
     theSessionRoom.messages.push(msgDoc);
     await theSessionRoom.save();
      
