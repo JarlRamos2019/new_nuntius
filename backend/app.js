@@ -143,6 +143,25 @@ app.post('/api/fetch-posts', async (req, res) => {
 
 connect();
 
+
+// Delete session route
+router.delete("/delete-session/:id", async (req, res) => {
+  try {
+    const session = await Session.findByIdAndDelete(req.params.id);
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+    res.status(200).json({ message: "Session deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Add the router to the Express app
+app.use(router);
+
+
 app.listen(port, () => {
   console.log("Server started on port " + port);
 });
