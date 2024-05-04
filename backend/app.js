@@ -29,14 +29,15 @@ async function connect() {
 }
 
 // Create session route
-app.post("api/create-session", async (req, res) => {
+app.post("/api/create-session", async (req, res) => {
   try {
-      const sessID = Math.random * 10000000;
-      const { nickname } = req.body;
+      const sessID = Math.floor(Math.random() * 10000000);
+      const { nickname, sessionName } = req.body;
       const avatar = 5;
 
       const newSession = {
           sessionID: sessID,
+          sessionName: sessionName,
           messages: []
       };
 
@@ -46,10 +47,12 @@ app.post("api/create-session", async (req, res) => {
         console.log("Session successfully created");
         console.log("Nickname: " + nickname);
         console.log("Session ID: " + sessID);
+        console.log("Session Name: " + sessionName);
         res.json({
             sessionID: sessID,
             nickname: nickname,
-            avatar: avatar
+            avatar: avatar,
+            sessionName: sessionName
         })
       } else {
         console.error("Failed to create new session");
@@ -62,19 +65,21 @@ app.post("api/create-session", async (req, res) => {
 });
 
 // Join session route
-app.post("api/join-session", async (req, res) => {
+app.post("/api/join-session", async (req, res) => {
   try {
       const { sessionID, nickname } = req.body;
       const avatar = 5;
 
       const response = await Sess.find({sessionID: sessionID});
+      console.log("join-session: response is: " + JSON.stringify(response));
       if (!response) {
           return res.status(404).json({ message: "Session not found" });
       } else {
         res.json({
           nickname: nickname,
           avatar: avatar,
-          sessionID: sessionID
+          sessionID: sessionID,
+          sessionName: response[0].sessionName
         });
       }
    } catch (error) {
@@ -123,12 +128,17 @@ app.post('/api/create-new-post', async (req, res) => {
 app.post('/api/fetch-posts', async (req, res) => {
   try {
     const {sessionID} = req.body;
-    const response = await Sess.find({'_id': sessionID});
+    const response = await Sess.find({sessionID: sessionID});
 
     if (response) {
-      const fetchedPosts = response[0].messages;
-      console.log("Session messages successfully retrieved.");
-      res.json({messageData: fetchedPosts});
+      if (response.length !== 0) {
+        const fetchedPosts = response[0].messages;
+        console.log("Session messages successfully retrieved.");
+        res.json({messageData: fetchedPosts});
+      } else {
+        console.log("No messages yet");
+        res.json({messageData: []});
+      }
     } else {
       const failure = "Unable to retrieve messages";
       console.error(failure);

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const sessionSchema = new mongoose.Schema({
     sessionID: Number,
+    sessionName: String,
     messages: [{
         nickname: {
             type: String,

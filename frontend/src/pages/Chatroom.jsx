@@ -2,15 +2,35 @@ import {useState, useEffect, useRef} from "react";
 import Navbar from "../components/Navbar.jsx";
 import axios from "axios";
 
-export default function Chatroom({messages, setMessages, session, sessionName}) {
+export default function Chatroom({
+    messages, 
+    setMessages, 
+    session, 
+    setSession, 
+    sessionName, 
+    setSessionName,
+    newSession,
+    mountNewSession}) {
 
-    const formData = useRef(null);
+    const formData =  {
+        msg: useRef(null)
+    }
+
+    const [newMessage, setNewMessage] = useState([]);
     
     //const [messages, setMessages] = useState([]);
 
     useEffect(() => {
+        console.log("Chatroom: useEffect has ran");
         get_the_messages();
-    }, []);
+        setSession(sessionStorage.getItem("sessID"));
+        setSessionName(sessionStorage.getItem("sessName"));
+        console.log("the new session is " + sessionName + " with ID " + newSession);
+    }, [newSession]);
+
+    useEffect(() => {
+        get_the_messages();
+    }, [newMessage]);
     
     async function get_the_messages() {
         try { 
@@ -18,7 +38,9 @@ export default function Chatroom({messages, setMessages, session, sessionName}) 
                 sessionID: sessionStorage.getItem("sessID")
             });
 
-            const formattedMsgs = response.data.map((item) => ({
+            console.log("Chatroom: response is: " + JSON.stringify(response));
+
+            const formattedMsgs = response.data.messageData.map((item) => ({
                 timestamp: item.timestamp,
                 nickname: item.nickname,
                 content: item.content
@@ -38,11 +60,21 @@ export default function Chatroom({messages, setMessages, session, sessionName}) 
     
     async function send_message() {
         try {
+            const targetMessage = {
+                sessionID: sessionStorage.getItem("sessID"),
+                nickname: sessionStorage.getItem("userNickname"),
+                avatar: sessionStorage.getItem("userAvatar"),
+                content: formData.msg.current.value, 
+                type: 'text'
+            }
+
+            setNewMessage(targetMessage);
+
             const response = await axios.post("http://localhost:4000/api/create-new-post", {
                 sessionID: sessionStorage.getItem("sessID"),
                 nickname: sessionStorage.getItem("userNickname"),
                 avatar: sessionStorage.getItem("userAvatar"),
-                content: formData.current.msg.value, 
+                content: formData.msg.current.value, 
                 type: 'text'
             });
 
@@ -77,6 +109,7 @@ export default function Chatroom({messages, setMessages, session, sessionName}) 
 
     return (
         <> 
+        {console.log(typeof mountNewSession)}
             <Navbar/>
             <div className="msg-panel">
                 <h2 className="session-name">{sessionName}</h2>
@@ -86,11 +119,11 @@ export default function Chatroom({messages, setMessages, session, sessionName}) 
                 <form>
                     <textarea name="msg" 
                               type="message" 
-                              id="msg-textarea" 
-                              ref={formData}
+                              id="msg-textarea"
+                              ref={formData.msg}
                     />
                     <div className="button-spacer"/>
-                    <button id="the-send-msg-button" onClick={send_message()}>Send</button>
+                    <button id="the-send-msg-button" onClick={() => send_message()}>Send</button>
                 </form>
             </div>        
         </>

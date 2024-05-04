@@ -3,7 +3,14 @@ import {useState, useRef} from "react";
 import {Link} from "react-router-dom";
 import axios from "axios";
 
-export default function Home() {
+export default function Home({newSession, setNewSession}) {
+
+    const formData = {
+        sessionName: useRef(null),
+        nickname: useRef(null),
+        joinSessionID: useRef(null),
+        joinNickname: useRef(null)
+    };
 
     const [newClicked, setNewClicked] = useState(false);
     const [joinClicked, setJoinClicked] = useState(false);
@@ -12,12 +19,41 @@ export default function Home() {
     async function establishSession() {
         try {
             const response = await axios.post("http://localhost:4000/api/create-session", {
-                nickname: dummy
+                nickname: formData.nickname.current.value,
+                sessionName: formData.sessionName.current.value
             });
 
-            sessionStorage.setItem("userNickname", response[0].data.nickname);
-            sessionStorage.setItem("sessID", response[0].data.sessionID);
-            sessionStorage.setItem("userAvatar", response[0].data.avatar);
+            if (response) {
+                console.log("Session successfully established");
+                sessionStorage.setItem("userNickname", response.data.nickname);
+                sessionStorage.setItem("sessID", response.data.sessionID);
+                sessionStorage.setItem("userAvatar", response.data.avatar);
+                sessionStorage.setItem("sessName", response.data.sessionName);
+                setNewSession(sessionStorage.getItem("sessID"));
+            } else console.error("Failed to insert new session");
+            
+            /*
+            const response1 = await axios.post("http://localhost:4000/api/fetch-posts", {
+                sessionID: response.data.sessionID
+            });
+
+            console.log("Home: response is: " + JSON.stringify(response1));
+
+            const formattedMsgs = response1.data.messageData.map((item) => ({
+                timestamp: item.timestamp,
+                nickname: item.nickname,
+                content: item.content
+            }));
+
+            setMessages(formattedMsgs);
+
+            if (formattedMsgs) {
+                console.log("Messages successfully fetched");
+            } else {
+                console.log("Messages not fetched");
+            }
+            */
+
         } catch (error) {
             console.error("Error creating session: " + error);
         }  
@@ -26,15 +62,21 @@ export default function Home() {
 
     async function enterSession() {
         try {
+            console.log("Home: enter session");
             const response = await axios.post("http://localhost:4000/api/join-session", {
-                nickname: dummy
+                sessionID: formData.joinSessionID.current.value,
+                nickname: formData.joinNickname.current.value
             });
 
             if (!response) console.log("Server not found");
             else {
-                sessionStorage.setItem("userNickname", response[0].data.nickname);
-                sessionStorage.setItem("sessID", response[0].data.sessionID);
-                sessionStorage.setItem("userAvatar", response[0].data.avatar);
+                console.log("Successfully entered session");
+                sessionStorage.setItem("userNickname", response.data.nickname);
+                sessionStorage.setItem("sessID", response.data.sessionID);
+                sessionStorage.setItem("userAvatar", response.data.avatar);
+                sessionStorage.setItem("sessName", response.data.sessionName);
+                setNewSession(sessionStorage.getItem("sessID"));
+                console.log("new session is: " + sessionStorage.getItem("sessID"));
             }
         } catch (error) {
             console.error("Error joining session: " + error);
@@ -65,11 +107,11 @@ export default function Home() {
                 newClicked ? (
                     <div id="create-session-enter">
                         <form id="create-session-form">
-                            <b>Session ID</b>
-                            <input type="text" id="create-session-input"/>
+                            <b>Session Name</b>
+                            <input type="text" id="create-session-input" ref={formData.sessionName}/>
                             <div className="button-spacer"></div>
                             <b>Username</b>
-                            <input type="text" className="username-input"/>
+                            <input type="text" className="username-input" ref={formData.nickname}/>
                             <div className="big-button-spacer"></div>
                             <Link className="the-button-link" to="/chatroom">
                                 <button id="confirm-create" onClick={() => establishSession()}>Create Session</button>
@@ -81,10 +123,10 @@ export default function Home() {
                         <div id="join-session-enter">
                             <form>
                                 <b>Session ID</b>
-                                <input type="text" id="join-session-input"/>
+                                <input type="text" id="join-session-input" ref={formData.joinSessionID}/>
                                 <div className="button-spacer"></div>
                                 <b>Username</b>
-                                <input type="text" className="username-input"/>
+                                <input type="text" className="username-input" ref={formData.joinNickname}/>
                                 <div className="big-button-spacer"></div>
                                 <Link className="the-button-link" to="/chatroom">
                                     <button id="confirm-join" onClick={() => enterSession()}>Join Session</button>
