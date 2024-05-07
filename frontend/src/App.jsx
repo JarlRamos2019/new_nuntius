@@ -7,15 +7,16 @@ import Chatroom from "./pages/Chatroom.jsx";
 
 export default function App() {
 
-    const [newSession, setNewSession] = useState(0);
+    const [newSession, setNewSession] = useState();
     const [messages, setMessages] = useState([]);
     const [session, setSession] = useState(0);
     const [sessionName, setSessionName] = useState('');
     const [userInfo, setUserInfo] = useState('');
 
-    const mountNewSession = (session) => {
-        setNewSession(session);
-    }
+    useEffect(() => {
+       console.log(session);
+    }, []);
+
 
     return (
         <BrowserRouter>

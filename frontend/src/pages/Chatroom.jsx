@@ -10,7 +10,7 @@ export default function Chatroom({
     sessionName, 
     setSessionName,
     newSession,
-    mountNewSession}) {
+    setNewSession}) {
 
     const formData =  {
         msg: useRef(null)
@@ -21,21 +21,32 @@ export default function Chatroom({
     //const [messages, setMessages] = useState([]);
 
     useEffect(() => {
-        console.log("Chatroom: useEffect has ran");
-        get_the_messages();
+        console.log("========> useEffect 1 has ran");
         setSession(sessionStorage.getItem("sessID"));
-        setSessionName(sessionStorage.getItem("sessName"));
-        console.log("the new session is " + sessionName + " with ID " + newSession);
+        console.log("new session in useEffect 1 is: " + newSession);
+        console.log("sessionStorage is: " + sessionStorage.getItem("sessID"));
+        setSessionName(sessionStorage.getItem("sessName")); 
     }, [newSession]);
 
     useEffect(() => {
+        console.log("========> useEffect 2 has ran");
+        console.log("current session is: " + session);
+        console.log("new session is: " + newSession);
+        get_the_messages();
+    }, [session]);
+    
+    useEffect(() => {
+        console.log("========> useEffect 3 has ran");
         get_the_messages();
     }, [newMessage]);
     
-    async function get_the_messages() {
+    const get_the_messages = async () => {
+        console.log("We got the messages!!!!!");
+        console.log("get_the_messages: session ID is " + session);
+
         try { 
             const response = await axios.post("http://localhost:4000/api/fetch-posts", {
-                sessionID: sessionStorage.getItem("sessID")
+                sessionID: session
             });
 
             console.log("Chatroom: response is: " + JSON.stringify(response));
@@ -45,6 +56,10 @@ export default function Chatroom({
                 nickname: item.nickname,
                 content: item.content
             }));
+
+            // this stops all async calls to get_the_messages that contain the
+            // wrong session ID
+            if (session !== newSession) return;
 
             setMessages(formattedMsgs);
 
@@ -89,6 +104,11 @@ export default function Chatroom({
         }   
     }
     
+    async function send_message_through_socket() {
+
+    }
+
+
     function display_messages() {
         return (
             <div className="container-fluid">
@@ -96,7 +116,7 @@ export default function Chatroom({
                     {messages.map((msg, index) => (
                         <li className="message-entry container-fluid">
                             <div className="individual-msg" key={index}>
-                                <p className="the-timestamp">{msg.timestamp}</p>
+                                <p className="the-timestamp">{format_timestring(msg.timestamp)}</p>
                                 <p className="the-nickname">{msg.nickname}</p>
                                 <p className="the-content">{msg.content}</p>
                             </div>    
@@ -107,15 +127,21 @@ export default function Chatroom({
         )
     }
 
+    function format_timestring(timestamp) {
+        const date = new Date(timestamp);
+        const dateComponent = date.toLocaleDateString("en-US");
+        const timeComponent = date.toLocaleTimeString("en-US");
+        return dateComponent.concat(" ", timeComponent);
+    }
+
     return (
-        <> 
-        {console.log(typeof mountNewSession)}
-            <Navbar/>
+        <>
+            <Navbar setSession={setSession} setNewSession={setNewSession}/>
             <div className="msg-panel">
                 <h2 className="session-name">{sessionName}</h2>
                 <p className="session-id">Session ID: {session}</p>
                 
-                {messages ? display_messages() : "Ono Chatroom"}
+                {messages ? display_messages() : ""}
                 <form>
                     <textarea name="msg" 
                               type="message" 

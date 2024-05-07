@@ -71,7 +71,7 @@ app.post("/api/join-session", async (req, res) => {
       const avatar = 5;
 
       const response = await Sess.find({sessionID: sessionID});
-      console.log("join-session: response is: " + JSON.stringify(response));
+      //console.log("join-session: response is: " + JSON.stringify(response));
       if (!response) {
           return res.status(404).json({ message: "Session not found" });
       } else {
@@ -99,10 +99,13 @@ app.post('/api/create-new-post', async (req, res) => {
       type: type,
       timestamp: Date.now()
     }
+
+    console.log("Pending message is: " + JSON.stringify(msgDoc));
   
     const theSessionRoom = await Sess.find({sessionID: sessionID});
-    theSessionRoom.messages.push(msgDoc);
-    await theSessionRoom.save();
+    // console.log("The Session Room is " + JSON.stringify(theSessionRoom));
+    theSessionRoom[0].messages.push(msgDoc);
+    await theSessionRoom[0].save();
      
     if (theSessionRoom) {
       const success = "Message successfully added";
@@ -127,13 +130,14 @@ app.post('/api/create-new-post', async (req, res) => {
 
 app.post('/api/fetch-posts', async (req, res) => {
   try {
+    console.log("Initiating fetch posts...");
     const {sessionID} = req.body;
     const response = await Sess.find({sessionID: sessionID});
 
     if (response) {
       if (response.length !== 0) {
         const fetchedPosts = response[0].messages;
-        console.log("Session messages successfully retrieved.");
+        console.log("Session messages successfully retrieved for session: " + JSON.stringify(sessionID));
         res.json({messageData: fetchedPosts});
       } else {
         console.log("No messages yet");

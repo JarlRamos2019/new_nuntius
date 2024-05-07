@@ -14,7 +14,8 @@
 
 .the-timestamp {
   float: right;
-  margin-top: 0px;
+  margin-top: 3px;
+  font-style: italic;
 }
 
 .the-nickname, .the-content {
@@ -29,7 +30,7 @@
 .msg-panel {
   position: absolute;
   left: 50%;
-  top: 30%;
+  top: 55%;
   width: 1000px;
   transform: translate(-50%, -50%);
 }
@@ -43,6 +44,8 @@
 
 .series-of-messages {
   padding: 0px 0px 0px 0px;
+  overflow: scroll;
+  height: 640px;
 }
 
 .series-of-messages li {
@@ -92,6 +95,31 @@
   display: block;
   width: 195px;
   border-radius: 6px;
+}
+
+.right-items {
+  position: absolute;
+  right: 170px;
+}
+
+.welcome {
+  font-style: italic;
+  display: inline-block;
+  padding: 13px 15px 0 0;
+}
+
+.leave-session {
+  color: #ffffff;
+  background-color: #5f5f78;
+  font-size: medium;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+  height: 50px;
+  position: absolute;
+  top: 15px;
+  display: inline-block;
 }
 
 #create-session-button {
@@ -219,20 +247,6 @@
   width: auto;
 }
 
-.leave-session {
-  color: #ffffff;
-  background-color: #5f5f78;
-  font-size: medium;
-  font-weight: bold;
-  border: none;
-  border-radius: 10px;
-  width: 150px;
-  height: 50px;
-  position: absolute;
-  right: 20px;
-  top: 15px;
-}
-
 .leave-session:hover {
   color: #ffffff;
   background-color: #6a6a76;
@@ -243,8 +257,8 @@
   width: 150px;
   height: 50px;
   position: absolute;
-  right: 20px;
   top: 15px;
+  display: inline-block;
 }
 
 #the-send-msg-button {
