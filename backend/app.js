@@ -158,24 +158,36 @@ app.post('/api/fetch-posts', async (req, res) => {
 connect();
 
 
-// Delete session route
-router.delete("/delete-session/:id", async (req, res) => {
+//Delete session route
+app.post('/api/delete-session', async (req, res) => {
+  
+
   try {
-    const session = await Session.findByIdAndDelete(req.params.id);
-    if (!session) {
-      return res.status(404).json({ message: "Session not found" });
+
+    console.log("Succesfully Ran Delete Endpoint.")
+    const { sessionID } = req.body;
+
+    if (!sessionID) {
+      return res.status(400).json({ message: "Session ID is required" });
     }
-    res.status(200).json({ message: "Session deleted successfully" });
+
+    const session = await Sess.deleteOne({ sessionID: sessionID });
+
+    if (session) {
+      console.log("Session successfully deleted:", sessionID);
+      res.json({ message: "Session deleted successfully", sessionID: sessionID });
+    } else {
+      console.log("Session not found:", sessionID);
+      res.status(404).json({ message: "Session not found" });
+    }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error deleting session:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
-
-// Add the router to the Express app
-app.use(router);
-
 
 app.listen(port, () => {
   console.log("Server started on port " + port);
 });
+
+connect();
