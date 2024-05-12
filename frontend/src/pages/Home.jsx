@@ -97,7 +97,7 @@ export default function Home({newSession, setNewSession}) {
     }
 
 
-     async function deleteSession() {
+    async function deleteSession() {
         
 
         try {
@@ -149,7 +149,7 @@ export default function Home({newSession, setNewSession}) {
     }
 
     return (
-       <>
+      <>
            <img id="main-logo" src={NuntiusLogo} alt="nuntius-logo"/>
            {
               newClicked ? (
