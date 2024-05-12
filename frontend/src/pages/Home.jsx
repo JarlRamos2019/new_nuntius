@@ -96,7 +96,6 @@ export default function Home({newSession, setNewSession}) {
 
     }
 
-
     async function deleteSession() {
         
 
@@ -131,6 +130,7 @@ export default function Home({newSession, setNewSession}) {
         }
 
       }
+   
 
     async function onClickCreate() {
         setNewClicked(true);    
@@ -148,7 +148,7 @@ export default function Home({newSession, setNewSession}) {
         setJoinClicked(false);
     }
 
-    return (
+   return (
       <>
            <img id="main-logo" src={NuntiusLogo} alt="nuntius-logo"/>
            {
