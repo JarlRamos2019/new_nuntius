@@ -163,9 +163,6 @@ app.post('/api/delete-session', async (req, res) => {
   
 
   try {
-    const session = await Session.findByIdAndDelete(req.params.id);
-    if (!session) {
-      return res.status(404).json({ message: "Session not found" });
 
     console.log("Succesfully Ran Delete Endpoint.")
     const { sessionID } = req.body;
@@ -183,16 +180,18 @@ app.post('/api/delete-session', async (req, res) => {
       console.log("Session not found:", sessionID);
       res.status(404).json({ message: "Session not found" });
     }
-    res.status(200).json({ message: "Session deleted successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
     console.error("Error deleting session:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
 
-
 app.listen(port, () => {
   console.log("Server started on port " + port);
 });
+
+
+
+
+
+connect();
