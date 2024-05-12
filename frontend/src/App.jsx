@@ -8,14 +8,13 @@ import Chatroom from "./pages/Chatroom.jsx";
 export default function App() {
 
     const [newSession, setNewSession] = useState();
-    const [messages, setMessages] = useState([]);
-    const [session, setSession] = useState(0);
     const [sessionName, setSessionName] = useState('');
-    const [userInfo, setUserInfo] = useState('');
 
+    
     useEffect(() => {
-       console.log(session);
+       console.log("App: the useEffect() session is " + newSession);
     }, []);
+    
 
 
     return (
@@ -24,12 +23,7 @@ export default function App() {
                 <Routes>
                     <Route index element={<Home newSession={newSession} 
                                                 setNewSession={setNewSession}/>}/>
-                    <Route path="chatroom" element={<Chatroom messages={messages}
-                                                              setMessages={setMessages} 
-                                                              userInfo={userInfo} 
-                                                              session={session} 
-                                                              setSession={setSession}
-                                                              sessionName={sessionName}
+                    <Route path="chatroom" element={<Chatroom sessionName={sessionName}
                                                               setSessionName={setSessionName}
                                                               newSession={newSession}
                                                               setNewSession={setNewSession}/>}/>

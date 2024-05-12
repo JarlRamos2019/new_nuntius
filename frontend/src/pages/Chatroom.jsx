@@ -3,10 +3,6 @@ import Navbar from "../components/Navbar.jsx";
 import axios from "axios";
 
 export default function Chatroom({
-    messages, 
-    setMessages, 
-    session, 
-    setSession, 
     sessionName, 
     setSessionName,
     newSession,
@@ -16,9 +12,9 @@ export default function Chatroom({
         msg: useRef(null)
     }
 
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState([]);
-    
-    //const [messages, setMessages] = useState([]);
+    const [session, setSession] = useState();
 
     useEffect(() => {
         console.log("========> useEffect 1 has ran");
@@ -59,7 +55,14 @@ export default function Chatroom({
 
             // this stops all async calls to get_the_messages that contain the
             // wrong session ID
-            if (session !== newSession) return;
+            console.log("get_the_messages");
+            console.log("session is: " + session);
+            console.log("newSession is: " + newSession);
+            if (!session) {
+
+                console.log("Returning from function...");
+                return;
+            }
 
             setMessages(formattedMsgs);
 
@@ -72,7 +75,11 @@ export default function Chatroom({
             console.error("Error fetching messages: " + error);
         }  
     }
-    
+
+    const handleSubmit = async (e) => {
+        //e.preventDefault();
+    }    
+
     async function send_message() {
         try {
             const targetMessage = {
@@ -142,7 +149,7 @@ export default function Chatroom({
                 <p className="session-id">Session ID: {session}</p>
                 
                 {messages ? display_messages() : ""}
-                <form>
+                <form onSubmit={handleSubmit}>
                     <textarea name="msg" 
                               type="message" 
                               id="msg-textarea"

@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 export default function Navbar({setSession, setNewSession}) {
 
-    function clear_out_session_upon_exit() {
+    function clear_out_session_upon_exit() { 
         setSession('');
         setNewSession('');
         sessionStorage.setItem("userNickname", '');

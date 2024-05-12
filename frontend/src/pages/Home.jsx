@@ -15,9 +15,14 @@ export default function Home({newSession, setNewSession}) {
 
     const [newClicked, setNewClicked] = useState(false);
     const [joinClicked, setJoinClicked] = useState(false);
+    const [error, setError] = useState("");
     const dummy = "Nicolette";
 
-    async function establishSession() {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    }    
+
+    const establishSession = async () => {
         try {
             const response = await axios.post("http://localhost:4000/api/create-session", {
                 nickname: formData.nickname.current.value,
@@ -56,7 +61,9 @@ export default function Home({newSession, setNewSession}) {
             */
 
         } catch (error) {
+            setError(error);
             console.error("Error creating session: " + error);
+            alert("Error creating session!");
         }  
 
     }
@@ -80,15 +87,15 @@ export default function Home({newSession, setNewSession}) {
                 console.log("new session is: " + sessionStorage.getItem("sessID"));
             }
         } catch (error) {
+            setError(error);
             console.error("Error joining session: " + error);
+            alert("Error joining session!");
         }
 
     }
 
 
     async function deleteSession() {
-        
-
         try {
 
         console.log("Delete Session");
@@ -114,9 +121,9 @@ export default function Home({newSession, setNewSession}) {
     }
 
         catch (error) {
-
+            setError(error);
             console.log("Error deleting session: " + error);
-
+            alert("Error deleting session!");
         }
 
       }
@@ -140,54 +147,56 @@ export default function Home({newSession, setNewSession}) {
     }
 
     return (
-      <>
-           <img id="main-logo" src={NuntiusLogo} alt="nuntius-logo"/>
-           {
-              newClicked ? (
-                  <div id="create-session-enter">
-                      <form id="create-session-form">
-                          <b>Session Name</b>
-                          <input type="text" id="create-session-input" ref={formData.sessionName}/>
-                          <div className="button-spacer"></div>
-                          <b>Username</b>
-                          <input type="text" className="username-input" ref={formData.nickname}/>
-                          <div className="big-button-spacer"></div>
-                          <Link className="the-button-link" to="/chatroom">
-                              <button id="confirm-create" onClick={establishSession}>Create Session</button>
-                          </Link>
-                          <button className="back-button" onClick={onBackClickCreate}>Back</button>
-                      </form>
+        <>
+            {console.log("newSession (Home) is " + newSession)}
+             <img id="main-logo" src={NuntiusLogo} alt="nuntius-logo"/>
+             {
+                newClicked ? (
+                    <div id="create-session-enter">
+                        <form id="create-session-form" onSubmit={handleSubmit}>
+                            <b>Session Name</b>
+                            <input type="text" id="create-session-input" ref={formData.sessionName}/>
+                            <div className="button-spacer"></div>
+                            <b>Username</b>
+                            <input type="text" className="username-input" ref={formData.nickname}/>
+                            <div className="big-button-spacer"></div>
+                            <Link className="the-button-link" to="/chatroom">
+                                <button id="confirm-create" onClick={() => establishSession()}>Create Session</button>
+                            </Link>
+                            <button className="back-button" onClick={() => onBackClickCreate()}>Back</button>
+                        </form>
+                    </div>    
+                ) : ( joinClicked ? (
+                        <div id="join-session-enter">
+                            <form onSubmit={handleSubmit}>
+                                <b>Session ID</b>
+                                <input type="text" id="join-session-input" ref={formData.joinSessionID}/>
+                                <div className="button-spacer"></div>
+                                <b>Username</b>
+                                <input type="text" className="username-input" ref={formData.joinNickname}/>
+                                <div className="big-button-spacer"></div>
+                                <Link className="the-button-link" to="/chatroom" onClick={error.length !== 0 ? e => e.preventDefault() : ''}>
+                                    <button id="confirm-join" onClick={error.length === 0 ? () => enterSession() : ""}>Join Session</button>
+                                </Link>
+                                <button className="back-button" onClick={() => onBackClickJoin()}>Back</button>    
+                            </form>
+                        </div>      
+                      ) : (
+                        <div id="home-page-buttons">
+                            <button id="create-session-button" onClick={() => onClickCreate()}>Create Session</button>
+                            <div className="button-spacer"/>
+                            <button id="join-session-button" onClick={() => onClickJoin()}>Join Session</button>
+                            <input
+                                type="text"
+                                placeholder="Session ID to Delete"
+                                ref={formData.deleteSessionID}
+                                style={{marginTop: "10px"}}
+                            />
+                            <button id="delete-session-button" onClick={deleteSession}>Delete Session</button>
                   </div>
-              ) : joinClicked ? (
-                  <div id="join-session-enter">
-                      <form>
-                          <b>Session ID</b>
-                          <input type="text" id="join-session-input" ref={formData.joinSessionID}/>
-                          <div className="button-spacer"></div>
-                          <b>Username</b>
-                          <input type="text" className="username-input" ref={formData.joinNickname}/>
-                          <div className="big-button-spacer"></div>
-                          <Link className="the-button-link" to="/chatroom">
-                              <button id="confirm-join" onClick={enterSession}>Join Session</button>
-                          </Link>
-                          <button className="back-button" onClick={onBackClickJoin}>Back</button>    
-                      </form>
-                  </div>
-              ) : (
-                  <div id="home-page-buttons">
-                      <button id="create-session-button" onClick={onClickCreate}>Create Session</button>
-                      <div className="button-spacer"/>
-                      <button id="join-session-button" onClick={onClickJoin}>Join Session</button>
-                      <input
-                          type="text"
-                          placeholder="Session ID to Delete"
-                          ref={formData.deleteSessionID}
-                          style={{marginTop: "10px"}}
-                      />
-                      <button id="delete-session-button" onClick={deleteSession}>Delete Session</button>
-                  </div>
-              )
-           }        
-      </>
-  );
+                      )
+                )
+             }        
+        </> 
+    )
 }
