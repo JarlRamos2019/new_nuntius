@@ -155,7 +155,7 @@ app.post('/api/fetch-posts', async (req, res) => {
   }  
 })
 
-connect();
+//connect();
 
 
 //Delete session route
