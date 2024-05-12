@@ -9,15 +9,15 @@ export default function Home({newSession, setNewSession}) {
         sessionName: useRef(null),
         nickname: useRef(null),
         joinSessionID: useRef(null),
-        joinNickname: useRef(null)
+        joinNickname: useRef(null),
+        deleteSessionID: useRef(null)
     };
 
     const [newClicked, setNewClicked] = useState(false);
     const [joinClicked, setJoinClicked] = useState(false);
-    const [error, setError] = useState('');
     const dummy = "Nicolette";
 
-    const establishSession = async () => {
+    async function establishSession() {
         try {
             const response = await axios.post("http://localhost:4000/api/create-session", {
                 nickname: formData.nickname.current.value,
@@ -25,17 +25,13 @@ export default function Home({newSession, setNewSession}) {
             });
 
             if (response) {
-                setError('');
                 console.log("Session successfully established");
                 sessionStorage.setItem("userNickname", response.data.nickname);
                 sessionStorage.setItem("sessID", response.data.sessionID);
                 sessionStorage.setItem("userAvatar", response.data.avatar);
                 sessionStorage.setItem("sessName", response.data.sessionName);
-                setNewSession(response.data.sessionID);
-            } else {
-                console.error("Failed to insert new session");
-                alert("Error: Session not created");
-            }
+                setNewSession(sessionStorage.getItem("sessID"));
+            } else console.error("Failed to insert new session");
             
             /*
             const response1 = await axios.post("http://localhost:4000/api/fetch-posts", {
@@ -61,13 +57,11 @@ export default function Home({newSession, setNewSession}) {
 
         } catch (error) {
             console.error("Error creating session: " + error);
-            setError(error);
-            alert("Error: Session not created");
         }  
 
     }
 
-    const enterSession = async () => {
+    async function enterSession() {
         try {
             console.log("Home: enter session");
             const response = await axios.post("http://localhost:4000/api/join-session", {
@@ -75,26 +69,22 @@ export default function Home({newSession, setNewSession}) {
                 nickname: formData.joinNickname.current.value
             });
 
-            if (!response) {
-                console.log("Server not found");
-                alert("Error: Session not found");
-            } else {
-                setError('');
+            if (!response) console.log("Server not found");
+            else {
                 console.log("Successfully entered session");
                 sessionStorage.setItem("userNickname", response.data.nickname);
                 sessionStorage.setItem("sessID", response.data.sessionID);
                 sessionStorage.setItem("userAvatar", response.data.avatar);
                 sessionStorage.setItem("sessName", response.data.sessionName);
-                setNewSession(response.data.sessionID);
-                //console.log("new session is: " + newSession);
+                setNewSession(sessionStorage.getItem("sessID"));
+                console.log("new session is: " + sessionStorage.getItem("sessID"));
             }
         } catch (error) {
             console.error("Error joining session: " + error);
-            setError(error);
-            alert("Error: Session not found");
         }
 
     }
+
 
     async function deleteSession() {
         
@@ -130,8 +120,9 @@ export default function Home({newSession, setNewSession}) {
         }
 
       }
-   
-
+      
+    
+  
     async function onClickCreate() {
         setNewClicked(true);    
     }
@@ -148,7 +139,7 @@ export default function Home({newSession, setNewSession}) {
         setJoinClicked(false);
     }
 
-   return (
+    return (
       <>
            <img id="main-logo" src={NuntiusLogo} alt="nuntius-logo"/>
            {
