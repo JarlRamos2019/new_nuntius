@@ -96,43 +96,6 @@ export default function Home({newSession, setNewSession}) {
 
     }
 
-
-
-    async function deleteSession() {
-        
-
-        try {
-
-        console.log("Delete Session");
-
-        console.log(formData.deleteSessionID.current.value);
-
-        const response = await axios.post("http://localhost:4000/api/delete-session" , {
-            sessionID: formData.deleteSessionID.current.value
-
-        });
-
-        if (!response) console.log("Server not found");
-
-        else {
-            console.log("Successfully deleted a session!")
-            sessionStorage.removeItem("userNickname",response.data.nickname);
-            sessionStorage.removeItem("sessID",response.data.sessionID);
-            sessionStorage.removeItem("userAvatar",response.data.avatar);
-            sessionStorage.removeItem("sessName",response.data.sessionName);
-            
-        }
-
-    }
-
-        catch (error) {
-
-            console.log("Error deleting session: " + error);
-
-        }
-
-      }
-
     async function onClickCreate() {
         setNewClicked(true);    
     }
@@ -186,17 +149,11 @@ export default function Home({newSession, setNewSession}) {
                         </div>      
                       ) : (
                         <div id="home-page-buttons">
-                      <button id="create-session-button" onClick={onClickCreate}>Create Session</button>
-                      <div className="button-spacer"/>
-                      <button id="join-session-button" onClick={onClickJoin}>Join Session</button>
-                      <input
-                          type="text"
-                          placeholder="Session ID to Delete"
-                          ref={formData.deleteSessionID}
-                          style={{marginTop: "10px"}}
-                      />
-                      <button id="delete-session-button" onClick={deleteSession}>Delete Session</button>
-                  </div>
+                            <button id="create-session-button" onClick={() => onClickCreate()}>Create Session</button>
+                            <div className="button-spacer"/>
+                            <button id="join-session-button" onClick={() => onClickJoin()}>Join Session</button>
+                            <button id="delete-session-button">Delete Session</button>
+                        </div>
                       )
                 )
              }        
