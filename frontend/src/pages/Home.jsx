@@ -1,9 +1,12 @@
 import NuntiusLogo from "../images/nuntius_logo.png";
 import {useState, useRef} from "react";
 import {Link} from "react-router-dom";
+import { io } from "socket.io-client";
 import axios from "axios";
 
 export default function Home({newSession, setNewSession}) {
+
+    const socket = io("ws://localhost:4001");
 
     const formData = {
         sessionName: useRef(null),
@@ -36,6 +39,7 @@ export default function Home({newSession, setNewSession}) {
                 sessionStorage.setItem("userAvatar", response.data.avatar);
                 sessionStorage.setItem("sessName", response.data.sessionName);
                 setNewSession(sessionStorage.getItem("sessID"));
+                joinThatRoom(response.data.sessionID);
             } else console.error("Failed to insert new session");
             
             /*
@@ -85,6 +89,7 @@ export default function Home({newSession, setNewSession}) {
                 sessionStorage.setItem("sessName", response.data.sessionName);
                 setNewSession(sessionStorage.getItem("sessID"));
                 console.log("new session is: " + sessionStorage.getItem("sessID"));
+                joinThatRoom(response.data.sessionID);
             }
         } catch (error) {
             setError(error);
@@ -93,7 +98,6 @@ export default function Home({newSession, setNewSession}) {
         }
 
     }
-
 
     async function deleteSession() {
         try {
@@ -128,7 +132,9 @@ export default function Home({newSession, setNewSession}) {
 
       }
       
-    
+    async function joinThatRoom(data) {
+        socket.emit("join-room", (data));
+    }
   
     async function onClickCreate() {
         setNewClicked(true);    

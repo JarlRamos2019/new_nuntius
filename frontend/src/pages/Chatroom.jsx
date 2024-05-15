@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from "react";
+import { io } from "socket.io-client";
 import Navbar from "../components/Navbar.jsx";
 import axios from "axios";
 
@@ -15,6 +16,25 @@ export default function Chatroom({
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState([]);
     const [session, setSession] = useState();
+    const socket = io("ws://localhost:4001");
+
+    socket.on("receive-through-socket", (data) => {
+        console.log("Entering the socket...");
+        const msgPayload = {
+            nickname: data.nickname,
+            avatar: data.avatar,
+            content: data.content,
+            type: data.type,
+            timestamp: data.timestamp
+        }
+
+        console.log("from socket, we received... " + JSON.stringify(msgPayload));
+        setMessages((prevMsgs) => [...prevMsgs, msgPayload])
+    }, [])
+
+    useEffect(() => { 
+       
+    }, [socket])
 
     useEffect(() => {
         console.log("========> useEffect 1 has ran");
@@ -28,6 +48,10 @@ export default function Chatroom({
         console.log("========> useEffect 2 has ran");
         console.log("current session is: " + session);
         console.log("new session is: " + newSession);
+        if (session) {
+            socket.room = session.toString();
+        }
+        console.log("socket room is " + socket.room);
         get_the_messages();
     }, [session]);
     
@@ -35,6 +59,7 @@ export default function Chatroom({
         console.log("========> useEffect 3 has ran");
         get_the_messages();
     }, [newMessage]);
+    
     
     const get_the_messages = async () => {
         console.log("We got the messages!!!!!");
@@ -45,7 +70,7 @@ export default function Chatroom({
                 sessionID: session
             });
 
-            console.log("Chatroom: response is: " + JSON.stringify(response));
+            // console.log("Chatroom: response is: " + JSON.stringify(response));
 
             const formattedMsgs = response.data.messageData.map((item) => ({
                 timestamp: item.timestamp,
@@ -77,10 +102,17 @@ export default function Chatroom({
     }
 
     const handleSubmit = async (e) => {
-        //e.preventDefault();
+        // e.preventDefault();
     }    
 
+    async function send_message_wrapper() {
+        await send_message();
+        if (socket.room) send_message_through_socket(newMessage);
+    }
+
     async function send_message() {
+        
+        console.log("sending messages...")
         try {
             const targetMessage = {
                 sessionID: sessionStorage.getItem("sessID"),
@@ -90,8 +122,18 @@ export default function Chatroom({
                 type: 'text'
             }
 
+            console.log("socket room is " + socket.room);
+            console.log("session is " + session);
+            socket.room = session;
+            console.log("hello");
             setNewMessage(targetMessage);
-
+            
+            
+            if (socket.room) {
+                console.log("The session before socket is: " + session);
+                send_message_through_socket(targetMessage);
+            }
+            
             const response = await axios.post("http://localhost:4000/api/create-new-post", {
                 sessionID: sessionStorage.getItem("sessID"),
                 nickname: sessionStorage.getItem("userNickname"),
@@ -108,11 +150,20 @@ export default function Chatroom({
 
         } catch (error) {
             console.error("Error sending the message: " + error);
-        }   
+        }  
     }
     
-    async function send_message_through_socket() {
-
+    async function send_message_through_socket(data) {
+        console.log("sending through socket...");
+        const payload = {
+            sessionID: data.sessionID,
+            nickname: data.nickname,
+            avatar: data.avatar,
+            content: data.content,
+            type: data.type,
+            timestamp: Date.now()
+        }
+        socket.emit("send-through-socket", (payload));
     }
 
 
@@ -156,7 +207,7 @@ export default function Chatroom({
                               ref={formData.msg}
                     />
                     <div className="button-spacer"/>
-                    <button id="the-send-msg-button" onClick={() => send_message()}>Send</button>
+                    <button id="the-send-msg-button" onClick={() => send_message_wrapper()}>Send</button>
                 </form>
             </div>        
         </>

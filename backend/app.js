@@ -4,7 +4,11 @@ const cookieParser = require("cookie-parser");
 const Session = require("./session.js");
 const cors = require("cors");
 const bodyParser = require('body-parser');
-
+const io = require("socket.io")(4001, {
+  cors: {
+    origin:  ['http://localhost:3000']
+  }
+});
 const mongoose = require("mongoose");
 const app = express();
 const router = express.Router();
@@ -27,6 +31,37 @@ async function connect() {
     console.error(error);
   }
 }
+
+io.on("connection", (socket) => {
+  console.log("socket entered with ID " + socket.id);
+
+  socket.on("join-room", (data) => {
+    socket.room = data;
+    socket.join(socket.room);
+    console.log("Room joined in socket: room " + socket.room);
+
+  })
+
+  socket.on("send-through-socket", (data) => {
+    const payload = {
+      nickname: data.nickname,
+      avatar: data.avatar,
+      content: data.content,
+      type: data.type,
+      timestamp: data.timestamp
+    }
+
+    socket.room = data.sessionID;
+    console.log("the socket type is: " + typeof socket.room);
+
+    console.log("Socket: the message payload for socket room " + socket.room + " is: " + JSON.stringify(payload));
+
+    //socket.to(data.sessionID).emit("receive-through-socket", (payload));
+    socket.emit("receive-through-socket", payload);
+
+  })
+
+})
 
 // Create session route
 app.post("/api/create-session", async (req, res) => {
@@ -100,7 +135,7 @@ app.post('/api/create-new-post', async (req, res) => {
       timestamp: Date.now()
     }
 
-    console.log("Pending message is: " + JSON.stringify(msgDoc));
+    //console.log("Pending message is: " + JSON.stringify(msgDoc));
   
     const theSessionRoom = await Sess.find({sessionID: sessionID});
     // console.log("The Session Room is " + JSON.stringify(theSessionRoom));
